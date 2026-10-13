@@ -8,6 +8,8 @@ public class FirmFactory
     private string _nameMain;
     private List<Firm> _firms;
 
+    public List<Firm> Firms { get { return _firms; } }
+
     private static FirmFactory _instance = null;
     public static FirmFactory Instance {
         get {
@@ -18,8 +20,10 @@ public class FirmFactory
             return _instance;
         }
     }
+
     private FirmFactory() {
         _flds = new List<string>();
+        _firms = new List<Firm>();
         _nameMain = "Основное подразделение";
 
         _flds.Add("Поле 1");
@@ -70,7 +74,4 @@ public class FirmFactory
             firm.RenameField(oldName, newName);
         }
     }
-
-
-
 }

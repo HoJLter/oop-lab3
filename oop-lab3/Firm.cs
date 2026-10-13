@@ -91,6 +91,32 @@ public class Firm
         subFirm.AddContact(cont);
     }
 
+    public bool ExistContactWithType(ContType type)
+    {
+        foreach (var subFirm in _sbFirms)
+        {
+            if (subFirm.ExistContactWithType(type))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool ExistContactInPeriod(DateTime begin, DateTime end)
+    {
+        foreach (var subFirm in _sbFirms)
+        {
+            if (subFirm.ExistContactInPeriod(begin, end))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public bool ExistContact(Contact cont)
     {
         foreach (SubFirm subFirm in _sbFirms)
@@ -107,7 +133,7 @@ public class Firm
     public string GetField(string field)
     {
         if (!_usrFields.ContainsKey(field))
-            throw new InvalidOperationException("Field not finded!");
+            return null;
 
         return _usrFields[field];
     }

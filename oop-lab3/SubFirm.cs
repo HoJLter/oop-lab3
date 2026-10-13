@@ -71,6 +71,30 @@ public class SubFirm
     public string Tel { get { return _tel; } set { _tel = value; } }
 
 
+    public bool ExistContactWithType(ContType type)
+    {
+        foreach (var contact in _conts)
+        {
+            if (contact.Type == type)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool ExistContactInPeriod(DateTime begin, DateTime end)
+    {
+        foreach (var contact in _conts)
+        {
+            if (contact.BeginDt <= end && contact.EndDt >= begin)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public bool ExistContact(Contact contact)
     {
         foreach (var cont in _conts)
