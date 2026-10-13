@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace oop_lab3_tests
+﻿namespace oop_lab3_tests
 {
     [TestClass]
     public class FirmTests
     {
+
         [TestMethod]
-        public void AddSubFirmTest()
+        public void AddSubFirm_AddsSubFirm()
         {
             Firm firm = new Firm();
             SubFirm subFirm = new SubFirm();
@@ -18,6 +15,7 @@ namespace oop_lab3_tests
             Assert.AreEqual(1, firm.SbFirms.Count);
             Assert.AreSame(subFirm, firm.SbFirms[0]);
         }
+
 
         [TestMethod]
         public void CannotAddTwoMainSubFirmsTest()
@@ -44,9 +42,28 @@ namespace oop_lab3_tests
             Firm firm = new Firm();
 
             firm.AddField("ИНН");
-            firm.SetField("ИНН", "1234567890");
+            firm.SetField("ИНН", "345634567435");
 
-            Assert.AreEqual("1234567890", firm.GetField("ИНН"));
+            Assert.AreEqual("345634567435", firm.GetField("ИНН"));
+        }
+
+        [TestMethod]
+        public void GetField_WhenFieldDoesNotExist()
+        {
+            Firm firm = new Firm();
+
+            string result = firm.GetField("Несуществующее поле");
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void SetField_WhenFieldDoesNotExist()
+        {
+            Firm firm = new Firm();
+
+            Assert.Throws<InvalidOperationException>(
+                () => firm.SetField("ИНН", "345634567435"));
         }
 
         [TestMethod]
@@ -60,27 +77,52 @@ namespace oop_lab3_tests
             firm.RenameField("Старое имя", "Новое имя");
 
             Assert.AreEqual("Значение", firm.GetField("Новое имя"));
+            Assert.IsNull(firm.GetField("Старое имя"));
         }
 
         [TestMethod]
-        public void AddContToMainSubFirmTest()
+        public void RenameField_WhenOldNameDoesNotExist()
         {
             Firm firm = new Firm();
 
-            SbFirmType mainType = new SbFirmType();
-            mainType.IsMain = true;
+            Assert.Throws<InvalidOperationException>(
+                () => firm.RenameField("Старое имя", "Новое имя"));
+        }
 
-            SubFirm mainSubFirm = new SubFirm();
-            mainSubFirm.Type = mainType;
 
-            firm.AddSubFirm(mainSubFirm);
-
+        [TestMethod]
+        public void AddContToSbFirm_WhenSubFirmDontInFirm()
+        {
+            Firm firm = new Firm();
+            SubFirm anotherSubFirm = new SubFirm();
             Contact contact = new Contact();
 
-            firm.AddCont(contact);
+            Assert.Throws<InvalidOperationException>(
+                () => firm.AddContToSbFirm(contact, anotherSubFirm));
+        }
 
-            Assert.AreEqual(1, mainSubFirm.CountCont);
+        [TestMethod]
+        public void ExistContact_WhenContactExists()
+        {
+            Firm firm = new Firm();
+            SubFirm subFirm = new SubFirm();
+            Contact contact = new Contact();
+
+            firm.AddSubFirm(subFirm);
+            firm.AddContToSbFirm(contact, subFirm);
+
             Assert.IsTrue(firm.ExistContact(contact));
+        }
+
+        [TestMethod]
+        public void ExistContact_WhenContactDoesNotExist()
+        {
+            Firm firm = new Firm();
+            SubFirm subFirm = new SubFirm();
+
+            firm.AddSubFirm(subFirm);
+
+            Assert.IsFalse(firm.ExistContact(new Contact()));
         }
 
         [TestMethod]
