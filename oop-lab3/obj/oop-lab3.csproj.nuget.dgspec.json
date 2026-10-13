@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\HoJLter\\source\\repos\\oop-lab3\\oop-lab3\\oop-lab3.csproj": {}
+    "C:\\Users\\hojlter\\source\\repos\\oop-lab3\\oop-lab3\\oop-lab3.csproj": {}
   },
   "projects": {
-    "C:\\Users\\HoJLter\\source\\repos\\oop-lab3\\oop-lab3\\oop-lab3.csproj": {
+    "C:\\Users\\hojlter\\source\\repos\\oop-lab3\\oop-lab3\\oop-lab3.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\HoJLter\\source\\repos\\oop-lab3\\oop-lab3\\oop-lab3.csproj",
+        "projectUniqueName": "C:\\Users\\hojlter\\source\\repos\\oop-lab3\\oop-lab3\\oop-lab3.csproj",
         "projectName": "oop-lab3",
-        "projectPath": "C:\\Users\\HoJLter\\source\\repos\\oop-lab3\\oop-lab3\\oop-lab3.csproj",
-        "packagesPath": "C:\\Users\\HoJLter\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\HoJLter\\source\\repos\\oop-lab3\\oop-lab3\\obj\\",
+        "projectPath": "C:\\Users\\hojlter\\source\\repos\\oop-lab3\\oop-lab3\\oop-lab3.csproj",
+        "packagesPath": "C:\\Users\\hojlter\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\hojlter\\source\\repos\\oop-lab3\\oop-lab3\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\HoJLter\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\hojlter\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [

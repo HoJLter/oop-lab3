@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("oop-lab3")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fae95063eb3cc5bc30ec5727039974a1c0ceee95")]
 [assembly: System.Reflection.AssemblyProductAttribute("oop-lab3")]
 [assembly: System.Reflection.AssemblyTitleAttribute("oop-lab3")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
