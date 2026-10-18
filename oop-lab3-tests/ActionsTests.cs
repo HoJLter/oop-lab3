@@ -28,8 +28,7 @@
 
             FirmsSearcher searcher = new FirmsSearcher(firms);
 
-            Dictionary<string, string> fields =
-                new Dictionary<string, string>();
+            Dictionary<string, string> fields = new Dictionary<string, string>();
 
             fields.Add("Статус", "Новый");
 
@@ -99,11 +98,11 @@
             contact.EndDt = new DateTime(2026, 5, 15);
 
             firstFirm.AddCont(contact);
-            FirmRepository repo = new FirmRepository();
-            repo.addFirm(firstFirm);
-            repo.addFirm(secondFirm);
+            List<Firm> firmsList = new List<Firm>();
+            firmsList.Add(firstFirm);
+            firmsList.Add(secondFirm);
 
-            FirmsSearcher searcher = new FirmsSearcher(repo.Firms);
+            FirmsSearcher searcher = new FirmsSearcher(firmsList);
 
             List<Firm> result = searcher.SearchFirmsByContactPeriod(
                 new DateTime(2026, 5, 12),
@@ -113,5 +112,35 @@
             Assert.AreEqual(1, result.Count);
             Assert.AreSame(firstFirm, result[0]);
         }
+
+        [TestMethod]
+        public void SetFieldForFirms_UpdatesAllFirms()
+        {
+            Firm first = CreateFirm("Новый");
+            Firm second = CreateFirm("Постоянный");
+
+            List<Firm> firmsToEdit = new List<Firm> { first, second };
+
+            FirmsEditor.SetFieldForFirms(firmsToEdit, "Статус", "Обновлён");
+
+            Assert.AreEqual("Обновлён", first.GetField("Статус"));
+            Assert.AreEqual("Обновлён", second.GetField("Статус"));
+        }
+
+        [TestMethod]
+        public void AddContactForFirms_AddsToAllFirms()
+        {
+            Firm first = CreateFirm("Новый");
+            Firm second = CreateFirm("Постоянный");
+
+            FirmsEditor.AddContactForFirms(
+                new List<Firm> { first, second }, new Contact());
+
+            Assert.AreEqual(1, first.GetMain().CountCont);
+            Assert.AreEqual(1, second.GetMain().CountCont);
+        }
+
+
+
     }
 }

@@ -75,20 +75,3 @@ public sealed class FirmFactory
         return new List<string>(_flds);
     }
 }
-
-public class FirmRepository
-{
-    private List<Firm> _firms;
-    public List<Firm> Firms { get { return _firms; } }
-    public int Count { get { return _firms.Count; } }
-
-    public FirmRepository()
-    {
-        _firms = new List<Firm>();
-    }
-
-    public void addFirm(Firm newFirm)
-    {
-        _firms.Add(newFirm);
-    }
-}

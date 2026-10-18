@@ -1,7 +1,7 @@
 ﻿namespace oop_lab3_tests
 {
     [TestClass]
-    public sealed class ContactTests
+    public class ContactTests
     {
         [TestMethod]
         public void ContactCloneTest()
