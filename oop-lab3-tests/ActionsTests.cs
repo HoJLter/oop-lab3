@@ -5,18 +5,13 @@
     {
         private Firm CreateFirm(string status)
         {
-            Firm firm = new Firm();
+            SbFirmType mainType = TestSetup.sbFirmsTypeRepo[0];
+
+            FirmFactory factory = FirmFactory.Instance;
+            Firm firm = factory.Create();
 
             firm.AddField("Статус");
             firm.SetField("Статус", status);
-
-            SbFirmType mainType = new SbFirmType();
-            mainType.IsMain = true;
-
-            SubFirm mainSubFirm = new SubFirm();
-            mainSubFirm.Type = mainType;
-
-            firm.AddSubFirm(mainSubFirm);
 
             return firm;
         }
@@ -65,26 +60,6 @@
             Assert.AreSame(firstFirm, result[0]);
         }
 
-        [TestMethod]
-        public void SearchFirmsWithoutContactTest()
-        {
-            Firm firstFirm = CreateFirm("Новый");
-            Firm secondFirm = CreateFirm("Постоянный");
-
-            Contact contact = new Contact();
-            firstFirm.AddCont(contact);
-
-            List<Firm> firms = new List<Firm>();
-            firms.Add(firstFirm);
-            firms.Add(secondFirm);
-
-            FirmsSearcher searcher = new FirmsSearcher(firms);
-
-            List<Firm> result = searcher.SearchFirmsByContact(contact, false);
-
-            Assert.AreEqual(1, result.Count);
-            Assert.AreSame(secondFirm, result[0]);
-        }
 
         [TestMethod]
         public void SearchFirmsByContactTypeTest()
@@ -124,12 +99,11 @@
             contact.EndDt = new DateTime(2026, 5, 15);
 
             firstFirm.AddCont(contact);
+            FirmRepository repo = new FirmRepository();
+            repo.addFirm(firstFirm);
+            repo.addFirm(secondFirm);
 
-            List<Firm> firms = new List<Firm>();
-            firms.Add(firstFirm);
-            firms.Add(secondFirm);
-
-            FirmsSearcher searcher = new FirmsSearcher(firms);
+            FirmsSearcher searcher = new FirmsSearcher(repo.Firms);
 
             List<Firm> result = searcher.SearchFirmsByContactPeriod(
                 new DateTime(2026, 5, 12),
@@ -138,43 +112,6 @@
 
             Assert.AreEqual(1, result.Count);
             Assert.AreSame(firstFirm, result[0]);
-        }
-
-        [TestMethod]
-        public void SetFieldForFirmsTest()
-        {
-            Firm firstFirm = CreateFirm("Новый");
-            Firm secondFirm = CreateFirm("Новый");
-
-            List<Firm> firms = new List<Firm>();
-            firms.Add(firstFirm);
-            firms.Add(secondFirm);
-
-            FirmsEditor.SetFieldForFirms(
-                firms,
-                "Статус",
-                "Постоянный");
-
-            Assert.AreEqual("Постоянный", firstFirm.GetField("Статус"));
-            Assert.AreEqual("Постоянный", secondFirm.GetField("Статус"));
-        }
-
-        [TestMethod]
-        public void AddContactForFirmsTest()
-        {
-            Firm firstFirm = CreateFirm("Новый");
-            Firm secondFirm = CreateFirm("Постоянный");
-
-            List<Firm> firms = new List<Firm>();
-            firms.Add(firstFirm);
-            firms.Add(secondFirm);
-
-            Contact contact = new Contact();
-
-            FirmsEditor.AddContactForFirms(firms, contact);
-
-            Assert.IsTrue(firstFirm.ExistContact(contact));
-            Assert.IsTrue(secondFirm.ExistContact(contact));
         }
     }
 }

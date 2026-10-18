@@ -1,77 +1,102 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
-public class FirmFactory
+
+
+public sealed class FirmFactory
 {
-    private List<string> _flds;
-    private string _nameMain;
-    private List<Firm> _firms;
+    private readonly List<string> _flds;
+    private readonly SbFirmType _mainSbFirmType;
 
-    public List<Firm> Firms { get { return _firms; } }
+    private static FirmFactory _instance;
 
-    private static FirmFactory _instance = null;
-    public static FirmFactory Instance {
-        get {
+    public static FirmFactory Instance
+    {
+        get
+        {
             if (_instance == null)
             {
-                _instance = new FirmFactory();
+                throw new InvalidOperationException("Сначала вызовите FirmFactory.Initialize().");
             }
+
             return _instance;
         }
     }
 
-    private FirmFactory() {
-        _flds = new List<string>();
-        _firms = new List<Firm>();
-        _nameMain = "Основное подразделение";
+    public static void Initialize(SbFirmType mainFirmType)
+    {
+        if (mainFirmType == null)
+        {
+            throw new ArgumentNullException(nameof(mainFirmType));
+        }
 
-        _flds.Add("Поле 1");
-        _flds.Add("Поле 2");
-        _flds.Add("Поле 3");
-        _flds.Add("Поле 4");
-        _flds.Add("Поле 5");
+        if (!mainFirmType.IsMain)
+        {
+            throw new ArgumentException("Тип должен обозначать основное подразделение.", nameof(mainFirmType));
+        }
+
+        if (_instance != null)
+        {
+            throw new InvalidOperationException("Фабрика уже инициализирована.");
+        }
+
+        _instance = new FirmFactory(mainFirmType);
+    }
+
+    private FirmFactory(SbFirmType mainFirmType)
+    {
+        _mainSbFirmType = mainFirmType;
+
+        _flds = new List<string>
+        {
+            "Поле 1",
+            "Поле 2",
+            "Поле 3",
+            "Поле 4",
+            "Поле 5"
+        };
     }
 
     public Firm Create()
     {
         Firm firm = new Firm();
 
-        foreach (var name in _flds)
+        foreach (string name in _flds)
         {
             firm.UsrFields[name] = "";
         }
 
-        SubFirm mainSubfirm = new SubFirm();
-        mainSubfirm.Name = _nameMain;
-        mainSubfirm.Type = new SbFirmType
+        SubFirm mainSubfirm = new SubFirm
         {
-            Name = _nameMain,
-            IsMain = true,
+            Type = _mainSbFirmType
         };
+
         firm.AddSubFirm(mainSubfirm);
 
-        _firms.Add(firm);
         return firm;
     }
 
-    public void RenameField(string oldName, string newName)
+    public List<string> GetFields()
     {
-        int findedIndex = -1;
-        for (int i = 0; i < _flds.Count; i++)
-        {
-            if (_flds[i] == oldName) findedIndex = i;
-        }
+        return new List<string>(_flds);
+    }
+}
 
-        if (findedIndex == -1)
-        {
-            throw new Exception("Field not finded!!");
-        }
+public class FirmRepository
+{
+    private List<Firm> _firms;
+    public List<Firm> Firms { get { return _firms; } }
+    public int Count { get { return _firms.Count; } }
 
-        _flds[findedIndex] = newName;
-        foreach (var firm in _firms)
-        {
-            firm.RenameField(oldName, newName);
-        }
+    public FirmRepository()
+    {
+        _firms = new List<Firm>();
+    }
+
+    public void addFirm(Firm newFirm)
+    {
+        _firms.Add(newFirm);
     }
 }

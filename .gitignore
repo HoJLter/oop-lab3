@@ -1,6 +1,35 @@
+# Результаты сборки
+[Bb]in/
+[Oo]bj/
+[Aa]rtifacts/
+
+# Visual Studio: кеш и локальные настройки
 .vs/
-bin/
-obj/
-.vs/
-TestResults/
 *.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# JetBrains Rider / ReSharper
+.idea/
+_ReSharper*/
+*.DotSettings.user
+
+# Результаты тестов и покрытие
+[Tt]est[Rr]esults/
+coverage/
+coverage.xml
+coverage.cobertura.xml
+*.coverage
+*.coveragexml
+
+# Локальные пакеты NuGet (старые проекты)
+**/packages/
+!**/packages/build/
+
+# Логи
+*.log
+
+# Системные файлы
+Thumbs.db
+.DS_Store

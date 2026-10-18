@@ -3,6 +3,7 @@
     [TestClass]
     public class FirmFactoryTests
     {
+
         [TestMethod]
         public void InstanceReturnsSameFactoryTest()
         {
@@ -15,24 +16,46 @@
         [TestMethod]
         public void CreateCreatesFirmTest()
         {
-            FirmFactory factory = FirmFactory.Instance;
+            Firm firm = FirmFactory.Instance.Create();
 
-            Firm firm = factory.Create();
-
-            Assert.IsNotNull(firm);
-            Assert.AreEqual(1, firm.SbFirms.Count);
+            List<string> fields = FirmFactory.Instance.GetFields();
+            List<string> firmFields = firm.UsrFields.Keys.ToList();
+            Assert.AreEqual(5, fields.Count);
+            for (int i = 0; i < fields.Count; i++)
+            {
+                Assert.AreEqual(fields[i], firmFields[i]);
+            }
+            Assert.AreEqual(firm.GetMain().Type, TestSetup.sbFirmsTypeRepo[0]);
         }
 
         [TestMethod]
-        public void CreateAddsMainSubFirmTest()
+        public void FieldRenaming()
         {
             FirmFactory factory = FirmFactory.Instance;
-
             Firm firm = factory.Create();
 
-            SubFirm mainSubFirm = firm.GetMain();
+            List<string> values = new List<string>{ "0", "1", "2", "3", "4" };
+            List<string> fields = factory.GetFields();
+            for (int i = 0; i < fields.Count; i++)
+            {
+                firm.SetField(fields[i], values[i]);
+            }
 
-            Assert.IsTrue(mainSubFirm.IsMain);
+            for (int i = 0; i < fields.Count; i++)
+            {
+                string oldName = fields[i];
+                string newName = "Renamed_" + oldName;
+                firm.RenameField(oldName, newName);
+            }
+
+            for (int i = 0; i < fields.Count; i++)
+            {
+                string newName = "Renamed_" + fields[i];
+                Assert.IsNull(firm.GetField(fields[i]));
+                Assert.IsNotNull(firm.GetField(newName));
+
+                Assert.AreEqual(firm.GetField(newName), values[i]);
+            }
         }
     }
 }
