@@ -13,6 +13,8 @@ namespace oop_lab3_tests
         {
             sbFirmsTypeRepo = new SbFirmTypeCol();
             sbFirmsTypeRepo.Add(new SbFirmType { IsMain = true, Name = "Основное"});
+            sbFirmsTypeRepo.Add(new SbFirmType { IsMain = false, Name = "Первое подразделение" });
+
 
             FirmFactory.Initialize(sbFirmsTypeRepo[0]);
         }

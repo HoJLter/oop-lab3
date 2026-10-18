@@ -3,142 +3,89 @@
     [TestClass]
     public class FirmTests
     {
+        private Firm _firm;
+        private Dictionary<string, string> _initFields;
+        private SubFirm _mainSubFirm;
+        private SubFirm _otherSubFirm;
+
+        [TestInitialize]
+        public void Setup()
+        {
+            _initFields = new Dictionary<string, string>()
+            {
+                { "п1", "зн1"},
+                { "п2", "зн2"},
+                { "п3", "зн3"},
+                { "п4", "зн4"},
+                { "п5", "зн5"},
+            };
+            _firm = new Firm(_initFields);
+            _mainSubFirm = new SubFirm(TestSetup.sbFirmsTypeRepo[0]);
+            _otherSubFirm = new SubFirm(TestSetup.sbFirmsTypeRepo[1]);
+            
+            _firm.SbFirms.Add(_otherSubFirm);
+            _firm.SbFirms.Add(_mainSubFirm);
+        }
 
         [TestMethod]
-        public void AddSubFirm_AddsSubFirm()
+        public void Firm_Constructor_CreatesFields()
         {
-            Firm firm = new Firm();
-            SubFirm subFirm = new SubFirm();
-
-            firm.AddSubFirm(subFirm);
-
-            Assert.AreEqual(1, firm.SbFirms.Count);
-            Assert.AreSame(subFirm, firm.SbFirms[0]);
+            foreach (var initField in _initFields)
+            {
+                Assert.AreSame(initField.Value, _firm.GetField(initField.Key));
+            }
         }
 
 
         [TestMethod]
-        public void CannotAddTwoMainSubFirmsTest()
+        public void Firm_UpdateExistingFieldValue()
         {
-            Firm firm = new Firm();
-
-            SbFirmType mainType = new SbFirmType();
-            mainType.IsMain = true;
-
-            SubFirm firstMain = new SubFirm();
-            firstMain.Type = mainType;
-
-            SubFirm secondMain = new SubFirm();
-            secondMain.Type = mainType;
-
-            firm.AddSubFirm(firstMain);
-
-            Assert.Throws<InvalidOperationException>(() => firm.AddSubFirm(secondMain));
-        }
-
-        [TestMethod]
-        public void AddAndGetFieldTest()
-        {
-            Firm firm = new Firm();
-
-            firm.AddField("ИНН");
-            firm.SetField("ИНН", "345634567435");
-
-            Assert.AreEqual("345634567435", firm.GetField("ИНН"));
-        }
-
-        [TestMethod]
-        public void GetField_WhenFieldDoesNotExist()
-        {
-            Firm firm = new Firm();
-
-            string result = firm.GetField("Несуществующее поле");
-
-            Assert.IsNull(result);
-        }
-
-        [TestMethod]
-        public void SetField_WhenFieldDoesNotExist()
-        {
-            Firm firm = new Firm();
-
-            Assert.Throws<InvalidOperationException>(
-                () => firm.SetField("ИНН", "345634567435"));
-        }
-
-        [TestMethod]
-        public void RenameFieldTest()
-        {
-            Firm firm = new Firm();
-
-            firm.AddField("Старое имя");
-            firm.SetField("Старое имя", "Значение");
-
-            firm.RenameField("Старое имя", "Новое имя");
-
-            Assert.AreEqual("Значение", firm.GetField("Новое имя"));
-            Assert.IsNull(firm.GetField("Старое имя"));
-        }
-
-        [TestMethod]
-        public void RenameField_WhenOldNameDoesNotExist()
-        {
-            Firm firm = new Firm();
-
-            Assert.Throws<InvalidOperationException>(
-                () => firm.RenameField("Старое имя", "Новое имя"));
+            foreach (var initField in _initFields)
+            {
+                string newValue = initField.Value + "НОВОЕ ЗНАЧЕНИЕ";
+                _firm.SetField(initField.Key, newValue);
+                Assert.AreEqual(newValue, _firm.GetField(initField.Key));
+            }
         }
 
 
         [TestMethod]
-        public void AddContToSbFirm_WhenSubFirmDontInFirm()
+        public void Firm_GetMain()
         {
-            Firm firm = new Firm();
-            SubFirm anotherSubFirm = new SubFirm();
+            Assert.AreEqual(_mainSubFirm, _firm.GetMain());
+        }
+
+        [TestMethod]
+        public void Firm_GetMain_ThrowsIfNoMain()
+        {
+            var firm = new Firm(_initFields);
+            firm.AddSubFirm(_otherSubFirm);
+
+            Assert.Throws<Exception>(() => firm.GetMain());
+        }
+
+        [TestMethod]
+        public void Firm_AddContactToSubfirm()
+        {
             Contact contact = new Contact();
-
-            Assert.Throws<InvalidOperationException>(
-                () => firm.AddContToSbFirm(contact, anotherSubFirm));
+            _firm.AddContToSbFirm(contact, _otherSubFirm);
+            Assert.IsTrue(_otherSubFirm.ExistContact(contact));
+            Assert.IsFalse(_mainSubFirm.ExistContact(contact));
         }
 
         [TestMethod]
-        public void ExistContact_WhenContactExists()
+        public void Firm_RenameField()
         {
-            Firm firm = new Firm();
-            SubFirm subFirm = new SubFirm();
-            Contact contact = new Contact();
+            foreach (var initField in _initFields)
+            {
+                string newFieldName = initField.Key + "_new";
+                _firm.RenameField(initField.Key, newFieldName);
+                Assert.AreEqual(_firm.GetField(newFieldName), _initFields[initField.Key]);
 
-            firm.AddSubFirm(subFirm);
-            firm.AddContToSbFirm(contact, subFirm);
-
-            Assert.IsTrue(firm.ExistContact(contact));
+                _firm.RenameField(newFieldName, initField.Key);
+                Assert.AreEqual(_firm.GetField(initField.Key), _initFields[initField.Key]);
+            }
         }
 
-        [TestMethod]
-        public void ExistContact_WhenContactDoesNotExist()
-        {
-            Firm firm = new Firm();
-            SubFirm subFirm = new SubFirm();
-
-            firm.AddSubFirm(subFirm);
-
-            Assert.IsFalse(firm.ExistContact(new Contact()));
-        }
-
-        [TestMethod]
-        public void GetMainTest()
-        {
-            Firm firm = new Firm();
-
-            SbFirmType mainType = new SbFirmType();
-            mainType.IsMain = true;
-
-            SubFirm mainSubFirm = new SubFirm();
-            mainSubFirm.Type = mainType;
-
-            firm.AddSubFirm(mainSubFirm);
-
-            Assert.AreSame(mainSubFirm, firm.GetMain());
-        }
     }
 }

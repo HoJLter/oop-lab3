@@ -121,8 +121,9 @@ public class SubFirm
         return _type == type;
     }
 
-    public SubFirm()
+    public SubFirm(SbFirmType type)
     {
+        _type = type;
         _conts = new List<Contact>();
     }
 }

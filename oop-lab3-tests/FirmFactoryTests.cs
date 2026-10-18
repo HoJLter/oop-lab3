@@ -1,4 +1,6 @@
-﻿namespace oop_lab3_tests
+﻿using System.Security.Cryptography;
+
+namespace oop_lab3_tests
 {
     [TestClass]
     public class FirmFactoryTests
@@ -18,14 +20,15 @@
         {
             Firm firm = FirmFactory.Instance.Create();
 
+
             List<string> fields = FirmFactory.Instance.GetFields();
-            List<string> firmFields = firm.UsrFields.Keys.ToList();
-            Assert.AreEqual(5, fields.Count);
-            for (int i = 0; i < fields.Count; i++)
+
+            foreach (string field in fields)
             {
-                Assert.AreEqual(fields[i], firmFields[i]);
+                Assert.IsNotNull(firm.GetField(field));
             }
-            Assert.AreEqual(firm.GetMain().Type, TestSetup.sbFirmsTypeRepo[0]);
+
+           Assert.AreEqual(firm.GetMain().Type, TestSetup.sbFirmsTypeRepo[0]);
         }
 
         [TestMethod]

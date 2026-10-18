@@ -34,7 +34,7 @@ public sealed class FirmFactory
 
         if (!mainFirmType.IsMain)
         {
-            throw new ArgumentException("Тип должен обозначать основное подразделение.", nameof(mainFirmType));
+            throw new ArgumentException("Тип должен обозначать основное подразделение.");
         }
 
         if (_instance != null)
@@ -61,17 +61,9 @@ public sealed class FirmFactory
 
     public Firm Create()
     {
-        Firm firm = new Firm();
+        Firm firm = new Firm(_flds);
 
-        foreach (string name in _flds)
-        {
-            firm.UsrFields[name] = "";
-        }
-
-        SubFirm mainSubfirm = new SubFirm
-        {
-            Type = _mainSbFirmType
-        };
+        SubFirm mainSubfirm = new SubFirm(_mainSbFirmType);
 
         firm.AddSubFirm(mainSubfirm);
 

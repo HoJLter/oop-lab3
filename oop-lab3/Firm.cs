@@ -24,24 +24,34 @@ public class Firm
     public List<SubFirm> SbFirms { get { return _sbFirms; } set { _sbFirms = value; } }
     public string Street { get { return _street; } set { _street = value; } }
     public string Town { get { return _town; } set { _town = value; } }
-    public Dictionary<string, string> UsrFields { get { return _usrFields; } set { _usrFields = value; } }
     public string Web { get { return _web; } set { _web = value; } }
 
-    public Firm()
+    public Firm(List<string> usrFields)
     {
         _sbFirms = new List<SubFirm>();
         _usrFields = new Dictionary<string, string>();
+
+        foreach (string field in usrFields)
+        {
+            _usrFields.Add(field, "");
+        }
+    }
+
+    public Firm(Dictionary<string, string> usrFields)
+    {
+        _sbFirms = new List<SubFirm>();
+        _usrFields = new Dictionary<string, string>(usrFields);
     }
 
     public void AddSubFirm(SubFirm subFirm)
     {
         if (subFirm == null) throw new ArgumentNullException("Subfirm cannot be null!!");
 
-        if (subFirm.Type != null && subFirm.Type.IsMain)
+        if (subFirm.Type.IsMain)
         {
             foreach (var sb in _sbFirms)
             {
-                if (sb.Type != null && sb.Type.IsMain)
+                if (sb.Type.IsMain)
                     throw new InvalidOperationException("Main subfirm already created!!!!!!");
             }
         }
@@ -141,7 +151,7 @@ public class Firm
     public void SetField(string field, string value)
     {
         if (!_usrFields.ContainsKey(field))
-            throw new InvalidOperationException("Field not finded!");
+            throw new Exception("Field not finded!");
 
         _usrFields[field] = value;
     }
@@ -150,10 +160,10 @@ public class Firm
     {
         foreach (SubFirm subFirm in _sbFirms)
         {
-            if (subFirm.Type != null && subFirm.Type.IsMain)
+            if (subFirm.Type.IsMain)
                 return subFirm;
         }
 
-        throw new InvalidOperationException("Main subfirm not finded!");
+        throw new Exception("Main subfirm not finded!");
     }
 }
