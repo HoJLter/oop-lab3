@@ -106,5 +106,25 @@
             }
         }
 
+
+        [TestMethod]
+        public void Firm_AddSecondMainSubFirm()
+        {
+            var mainType = new SbFirmType
+            {
+                Name = "Основное",
+                IsMain = true
+            };
+
+            var secondMain = new SubFirm(mainType);
+
+            Assert.Throws<Exception>(() =>
+            {
+                _firm.AddSubFirm(secondMain);
+            });
+
+            Assert.AreSame(_mainSubFirm, _firm.GetMain());
+        }
+
     }
 }

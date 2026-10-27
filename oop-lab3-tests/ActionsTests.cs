@@ -5,12 +5,9 @@
     {
         private Firm CreateFirm(string status)
         {
-            SbFirmType mainType = TestSetup.sbFirmsTypeRepo[0];
+            Firm firm = FirmFactory.Instance.Create();
 
-            FirmFactory factory = FirmFactory.Instance;
-            Firm firm = factory.Create();
-
-            firm.AddField("Статус");
+            firm.RenameField("Поле 1", "Статус");
             firm.SetField("Статус", status);
 
             return firm;
@@ -114,7 +111,7 @@
         }
 
         [TestMethod]
-        public void SetFieldForFirms_UpdatesAllFirms()
+        public void SetFieldForFirmsTest()
         {
             Firm first = CreateFirm("Новый");
             Firm second = CreateFirm("Постоянный");
@@ -128,19 +125,35 @@
         }
 
         [TestMethod]
-        public void AddContactForFirms_AddsToAllFirms()
+        public void AddContactForFirmsTest()
         {
             Firm first = CreateFirm("Новый");
             Firm second = CreateFirm("Постоянный");
 
             FirmsEditor.AddContactForFirms(
-                new List<Firm> { first, second }, new Contact());
+                new List<Firm> { first, second },
+                new Contact());
 
             Assert.AreEqual(1, first.GetMain().CountCont);
             Assert.AreEqual(1, second.GetMain().CountCont);
         }
 
+        [TestMethod]
+        public void RenameFieldTest()
+        {
+            Firm first = CreateFirm("Новый");
+            Firm second = CreateFirm("Постоянный");
 
+            var firms = new List<Firm> { first, second };
+
+            FirmsEditor.RenameField(firms, "Статус", "Категория");
+
+            Assert.IsNull(first.GetField("Статус"));
+            Assert.IsNull(second.GetField("Статус"));
+
+            Assert.AreEqual("Новый", first.GetField("Категория"));
+            Assert.AreEqual("Постоянный", second.GetField("Категория"));
+        }
 
     }
 }

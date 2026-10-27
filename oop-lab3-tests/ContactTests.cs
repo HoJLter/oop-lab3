@@ -10,13 +10,14 @@
             Contact clonnedContact = contact.Clone();
 
             Assert.IsTrue(contact == clonnedContact);
+            Assert.AreNotSame(contact, clonnedContact);
         }
 
         [TestMethod]
         public void ContactNotEqualTest()
         {
-            Contact contact = new Contact();
-            Contact anotherContact = new Contact();
+            Contact contact = new Contact{ Descr = "Первый контакт" };
+            Contact anotherContact = new Contact{ Descr = "Второй контакт" };
 
             Assert.IsTrue(contact != anotherContact);
         }

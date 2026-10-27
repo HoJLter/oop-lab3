@@ -26,6 +26,14 @@ public class Firm
     public string Town { get { return _town; } set { _town = value; } }
     public string Web { get { return _web; } set { _web = value; } }
 
+    public SubFirm this[int index]
+    {
+        get
+        {
+            return _sbFirms[index];
+        }
+    }
+
     public Firm(List<string> usrFields)
     {
         _sbFirms = new List<SubFirm>();
@@ -45,14 +53,14 @@ public class Firm
 
     public void AddSubFirm(SubFirm subFirm)
     {
-        if (subFirm == null) throw new ArgumentNullException("Subfirm cannot be null!!");
+        if (subFirm == null) throw new Exception("Subfirm cannot be null!!");
 
-        if (subFirm.Type.IsMain)
+        if (subFirm.IsMain)
         {
             foreach (var sb in _sbFirms)
             {
-                if (sb.Type.IsMain)
-                    throw new InvalidOperationException("Main subfirm already created!!!!!!");
+                if (sb.IsMain)
+                    throw new Exception("Main subfirm already created!!!!!!");
             }
         }
         _sbFirms.Add(subFirm);
@@ -148,7 +156,7 @@ public class Firm
     {
         foreach (SubFirm subFirm in _sbFirms)
         {
-            if (subFirm.Type.IsMain)
+            if (subFirm.IsMain)
                 return subFirm;
         }
 

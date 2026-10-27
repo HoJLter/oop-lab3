@@ -64,10 +64,10 @@ public class SubFirm
     public string BossName { get { return _bossName; } set { _bossName = value; } }
     public int CountCont { get { return _conts.Count; } }
     public string Email { get { return _email; } set { _email = value; } }
-    public bool IsMain { get { return Type.IsMain; } }
+    public bool IsMain { get { return _type.IsMain; } }
     public string Name { get { return _name; } set { _name = value; } }
     public string OfcBossName { get { return _ofcBossName; } set { _ofcBossName = value; } }
-    public SbFirmType Type { get { return _type; } set { _type = value; } }
+    public SbFirmType Type { get { return _type; } }
     public string Tel { get { return _tel; } set { _tel = value; } }
 
 
@@ -106,6 +106,11 @@ public class SubFirm
 
     public void AddContact(Contact contact)
     {
+        if (contact is null)
+        {
+            throw new Exception("Contact cannot be null!");
+        }
+
         if (!ExistContact(contact))
         {
             _conts.Add(contact);

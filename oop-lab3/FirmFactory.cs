@@ -9,6 +9,7 @@ public sealed class FirmFactory
 {
     private readonly List<string> _flds;
     private readonly SbFirmType _mainSbFirmType;
+    private const string NameMain = "Основное подразделение";
 
     private static FirmFactory _instance;
 
@@ -72,7 +73,10 @@ public sealed class FirmFactory
     {
         Firm firm = new Firm(_flds);
 
-        SubFirm mainSubfirm = new SubFirm(_mainSbFirmType);
+        SubFirm mainSubfirm = new SubFirm(_mainSbFirmType)
+        {
+            Name = NameMain
+        };
 
         firm.AddSubFirm(mainSubfirm);
 
