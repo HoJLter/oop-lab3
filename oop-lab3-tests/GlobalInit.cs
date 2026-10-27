@@ -12,12 +12,27 @@ namespace oop_lab3_tests
         public static void Initialize(TestContext context)
         {
             sbFirmsTypeRepo = new SbFirmTypeCol();
-            sbFirmsTypeRepo.Add(new SbFirmType { IsMain = true, Name = "Основное"});
-            sbFirmsTypeRepo.Add(new SbFirmType { IsMain = false, Name = "Первое подразделение" });
+            sbFirmsTypeRepo.Add(new SbFirmType
+            {
+                IsMain = true,
+                Name = "Основное"
+            });
+            sbFirmsTypeRepo.Add(new SbFirmType
+            {
+                IsMain = false,
+                Name = "Первое подразделение"
+            });
 
+            var fields = new List<string>
+            {
+                "Поле 1",
+                "Поле 2",
+                "Поле 3",
+                "Поле 4",
+                "Поле 5"
+            };
 
-            FirmFactory.Initialize(sbFirmsTypeRepo[0]);
+            FirmFactory.Initialize(sbFirmsTypeRepo[0], fields);
         }
     }
-
 }

@@ -21,7 +21,7 @@ public class Firm
     public string Name { get { return _name; } set { _name = value; } }
     public string PostInx { get { return _postInx; } set { _postInx = value; } }
     public string Region { get { return _region; } set { _region = value; } }
-    public List<SubFirm> SbFirms { get { return _sbFirms; } set { _sbFirms = value; } }
+    public int SbFirmCount { get { return _sbFirms.Count; } }
     public string Street { get { return _street; } set { _street = value; } }
     public string Town { get { return _town; } set { _town = value; } }
     public string Web { get { return _web; } set { _web = value; } }
@@ -65,26 +65,14 @@ public class Firm
 
     public void RenameField(string oldName, string newName)
     {
-        bool flag = false;
-        foreach (var name in _usrFields.Keys)
-        {
-            if (name == oldName)
-            {
-                flag = true;
-                break;
-            }
-        }
+        if (!_usrFields.ContainsKey(oldName))
+            throw new InvalidOperationException("Field not founded!!");
 
-        if (flag)
-        {
-            _usrFields.Add(newName, _usrFields[oldName]);
-            _usrFields.Remove(oldName);
-        }
-        else
-        {
-            throw new InvalidOperationException("Name not found!!!!!!!");
-        }
+        if (oldName == newName)
+            return;
 
+        _usrFields.Add(newName, _usrFields[oldName]);
+        _usrFields.Remove(oldName);
     }
 
     public void AddCont(Contact cont)

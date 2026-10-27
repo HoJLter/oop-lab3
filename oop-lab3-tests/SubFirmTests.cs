@@ -96,5 +96,35 @@ namespace oop_lab3_tests
 
             Assert.IsTrue(isExists1);
         }
+
+        [TestMethod]
+        public void SbFirmTypeCol_Foreach()
+        {
+            var first = new SbFirmType
+            {
+                Name = "Основное",
+                IsMain = true
+            };
+            var second = new SbFirmType
+            {
+                Name = "Филиал",
+                IsMain = false
+            };
+
+            var collection = new SbFirmTypeCol();
+            collection.Add(first);
+            collection.Add(second);
+
+            var actual = new List<SbFirmType>();
+
+            foreach (var item in collection)
+            {
+                actual.Add(item);
+            }
+
+            Assert.AreEqual(2, actual.Count);
+            Assert.AreSame(first, actual[0]);
+            Assert.AreSame(second, actual[1]);
+        }
     }
 }

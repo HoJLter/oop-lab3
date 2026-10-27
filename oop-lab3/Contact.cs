@@ -77,6 +77,22 @@ public class Contact
         return !(a == b);
     }
 
+    public override bool Equals(object? obj)
+    {
+        if (obj is Contact)
+        {
+            Contact other = (Contact)obj;
+            return this == other;
+        }
+
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(_beginDt, _endDt, _descr, _dataInfo, _type);
+    }
+
     public Contact()
     {
         _beginDt = DateTime.Now;

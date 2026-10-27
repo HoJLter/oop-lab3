@@ -11,20 +11,39 @@
         [TestInitialize]
         public void Setup()
         {
-            _initFields = new Dictionary<string, string>()
-            {
-                { "п1", "зн1"},
-                { "п2", "зн2"},
-                { "п3", "зн3"},
-                { "п4", "зн4"},
-                { "п5", "зн5"},
+            _initFields = new Dictionary<string, string> {
+                { "п1", "зн1" },
+                { "п2", "зн2" },
+                { "п3", "зн3" },
+                { "п4", "зн4" },
+                { "п5", "зн5" }
             };
+
+            var mainType = new SbFirmType
+            {
+                Name = "Основное",
+                IsMain = true
+            };
+
+            var otherType = new SbFirmType
+            {
+                Name = "Обычное",
+                IsMain = false
+            };
+
+            _mainSubFirm = new SubFirm(mainType)
+            {
+                Name = "Основное подразделение"
+            };
+
+            _otherSubFirm = new SubFirm(otherType)
+            {
+                Name = "Дополнительное подразделение"
+            };
+
             _firm = new Firm(_initFields);
-            _mainSubFirm = new SubFirm(TestSetup.sbFirmsTypeRepo[0]);
-            _otherSubFirm = new SubFirm(TestSetup.sbFirmsTypeRepo[1]);
-            
-            _firm.SbFirms.Add(_otherSubFirm);
-            _firm.SbFirms.Add(_mainSubFirm);
+            _firm.AddSubFirm(_mainSubFirm);
+            _firm.AddSubFirm(_otherSubFirm);
         }
 
         [TestMethod]
