@@ -8,8 +8,14 @@ public class SbFirmType
     private bool _isMain;
     private string _name;
 
-    public bool IsMain { get { return _isMain; } set { _isMain = value; } }
-    public string Name { get { return _name; } set { _name = value; } }
+    public bool IsMain { get { return _isMain; }}
+    public string Name { get { return _name; }}
+
+    public SbFirmType(string name, bool isMain)
+    {
+        _name = name;
+        _isMain = isMain;
+    }
 }
 
 public class SbFirmTypeCol : IEnumerable<SbFirmType>
@@ -70,6 +76,15 @@ public class SubFirm
     public SbFirmType Type { get { return _type; } }
     public string Tel { get { return _tel; } set { _tel = value; } }
 
+    public SubFirm(SbFirmType type)
+    {
+        if (type == null)
+        {
+            throw new Exception("type is null!!");
+        }
+        _type = type;
+        _conts = new List<Contact>();
+    }
 
     public bool ExistContactWithType(ContType type)
     {
@@ -126,9 +141,5 @@ public class SubFirm
         return _type == type;
     }
 
-    public SubFirm(SbFirmType type)
-    {
-        _type = type;
-        _conts = new List<Contact>();
-    }
+
 }

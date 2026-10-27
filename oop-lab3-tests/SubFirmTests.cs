@@ -100,16 +100,8 @@ namespace oop_lab3_tests
         [TestMethod]
         public void SbFirmTypeCol_Foreach()
         {
-            var first = new SbFirmType
-            {
-                Name = "Основное",
-                IsMain = true
-            };
-            var second = new SbFirmType
-            {
-                Name = "Филиал",
-                IsMain = false
-            };
+            var first = new SbFirmType("Основное", true);
+            var second = new SbFirmType("Филиал", false);
 
             var collection = new SbFirmTypeCol();
             collection.Add(first);

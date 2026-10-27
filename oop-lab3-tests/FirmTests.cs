@@ -19,17 +19,9 @@
                 { "п5", "зн5" }
             };
 
-            var mainType = new SbFirmType
-            {
-                Name = "Основное",
-                IsMain = true
-            };
+            var mainType = new SbFirmType("Основное", true);
+            var otherType = new SbFirmType("Обычное", false);
 
-            var otherType = new SbFirmType
-            {
-                Name = "Обычное",
-                IsMain = false
-            };
 
             _mainSubFirm = new SubFirm(mainType)
             {
@@ -110,11 +102,7 @@
         [TestMethod]
         public void Firm_AddSecondMainSubFirm()
         {
-            var mainType = new SbFirmType
-            {
-                Name = "Основное",
-                IsMain = true
-            };
+            var mainType = new SbFirmType("Основное", true);
 
             var secondMain = new SubFirm(mainType);
 
