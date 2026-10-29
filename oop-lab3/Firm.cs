@@ -26,14 +26,6 @@ public class Firm
     public string Town { get { return _town; } set { _town = value; } }
     public string Web { get { return _web; } set { _web = value; } }
 
-    public SubFirm this[int index]
-    {
-        get
-        {
-            return _sbFirms[index];
-        }
-    }
-
     public Firm(List<string> usrFields)
     {
         _sbFirms = new List<SubFirm>();
@@ -95,6 +87,39 @@ public class Firm
             throw new InvalidOperationException("Subfirm not found!");
 
         subFirm.AddContact(cont);
+    }
+
+    public void AddContToMain(Contact cont)
+    {
+        AddContToSbFirm(cont, GetMain());
+    }
+
+    public Contact GetContact(Contact contact)
+    {
+        foreach (var subFirm in _sbFirms)
+        {
+            if (subFirm.ExistContact(contact))
+            {
+                return contact.Clone();
+            }
+        }
+
+        return null;
+    }
+
+    public List<Contact> GetContact(ContType type)
+    {
+        foreach (var subFirm in _sbFirms)
+        {
+            var contact = subFirm.ExistContactWithType(type);
+
+            if (contact != null)
+            {
+                return subFirm.GetContactWithType(type);
+            }
+        }
+
+        return null;
     }
 
     public bool ExistContactWithType(ContType type)
@@ -161,5 +186,30 @@ public class Firm
         }
 
         throw new Exception("Main subfirm not finded!");
+    }
+
+
+    public SubFirm GetByType(SbFirmType type)
+    {
+        foreach (var subFirm in _sbFirms)
+        {
+            if (subFirm.IsYourType(type))
+            {
+                return subFirm;
+            }
+        }
+        return null;
+    }
+
+    public SubFirm GetByName(string name)
+    {
+        foreach (var subFirm in _sbFirms)
+        {
+            if (subFirm.Name == name)
+            {
+                return subFirm;
+            }
+        }
+        return null;
     }
 }

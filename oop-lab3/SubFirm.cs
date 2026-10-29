@@ -98,6 +98,19 @@ public class SubFirm
         return false;
     }
 
+    public List<Contact> GetContactWithType(ContType type)
+    {
+        var result = new List<Contact>();
+        foreach (var contact in _conts)
+        {
+            if (contact.Type == type)
+            {
+                result.Add(contact);
+            }
+        }
+        return result;
+    }
+
     public bool ExistContactInPeriod(DateTime begin, DateTime end)
     {
         foreach (var contact in _conts)
@@ -128,7 +141,7 @@ public class SubFirm
 
         if (!ExistContact(contact))
         {
-            _conts.Add(contact);
+            _conts.Add(contact.Clone());
         }
         else
         {
@@ -140,6 +153,4 @@ public class SubFirm
     {
         return _type == type;
     }
-
-
 }

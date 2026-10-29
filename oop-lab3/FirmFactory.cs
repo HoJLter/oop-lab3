@@ -26,13 +26,22 @@ public sealed class FirmFactory
         }
     }
 
-    public static void Initialize(
-        SbFirmType mainFirmType,
-        List<string> fields)
+    public static void Initialize(SbFirmType mainFirmType)
+    {
+        if (_instance != null)
+        {
+            throw new InvalidOperationException("фабрика уже инициализирована.");
+        }
+
+        _instance = new FirmFactory(mainFirmType);
+    }
+
+
+    private FirmFactory(SbFirmType mainFirmType)
     {
         if (mainFirmType == null)
         {
-            throw new ArgumentNullException(nameof(mainFirmType));
+            throw new ArgumentNullException("mainFirmType не может быть нулл");
         }
 
         if (!mainFirmType.IsMain)
@@ -40,33 +49,15 @@ public sealed class FirmFactory
             throw new ArgumentException("тип должен обозначать основное подразделение.");
         }
 
-        if (fields == null)
-        {
-            throw new ArgumentNullException(nameof(fields));
-        }
-
-        if (fields.Count != 5)
-        {
-            throw new ArgumentException("должно быть ровно пять полей.");
-        }
-
-        if (fields.Distinct().Count() != fields.Count)
-        {
-            throw new ArgumentException("названия полей не должны повторяться.");
-        }
-
-        if (_instance != null)
-        {
-            throw new InvalidOperationException("фабрика уже инициализирована.");
-        }
-
-        _instance = new FirmFactory(mainFirmType, fields);
-    }
-
-    private FirmFactory(SbFirmType mainFirmType, List<string> fields)
-    {
         _mainSbFirmType = mainFirmType;
-        _flds = new List<string>(fields);
+        _flds = new List<string>()
+        {
+            "Поле 1", 
+            "Поле 2",
+            "Поле 3",
+            "Поле 4",
+            "Поле 5",
+        };
     }
 
     public Firm Create()

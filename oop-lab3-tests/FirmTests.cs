@@ -3,47 +3,15 @@
     [TestClass]
     public class FirmTests
     {
-        private Firm _firm;
-        private Dictionary<string, string> _initFields;
-        private SubFirm _mainSubFirm;
-        private SubFirm _otherSubFirm;
-
-        [TestInitialize]
-        public void Setup()
-        {
-            _initFields = new Dictionary<string, string> {
-                { "п1", "зн1" },
-                { "п2", "зн2" },
-                { "п3", "зн3" },
-                { "п4", "зн4" },
-                { "п5", "зн5" }
-            };
-
-            var mainType = new SbFirmType("Основное", true);
-            var otherType = new SbFirmType("Обычное", false);
-
-
-            _mainSubFirm = new SubFirm(mainType)
-            {
-                Name = "Основное подразделение"
-            };
-
-            _otherSubFirm = new SubFirm(otherType)
-            {
-                Name = "Дополнительное подразделение"
-            };
-
-            _firm = new Firm(_initFields);
-            _firm.AddSubFirm(_mainSubFirm);
-            _firm.AddSubFirm(_otherSubFirm);
-        }
-
         [TestMethod]
-        public void Firm_Constructor_CreatesFields()
+        public void Firm_Factory_CreatesEmptyFields()
         {
-            foreach (var initField in _initFields)
+            var factory = FirmFactory.Instance;
+            var firm = factory.Create();
+
+            foreach (string field in factory.GetFields())
             {
-                Assert.AreSame(initField.Value, _firm.GetField(initField.Key));
+                Assert.AreEqual("", firm.GetField(field));
             }
         }
 
@@ -51,68 +19,171 @@
         [TestMethod]
         public void Firm_UpdateExistingFieldValue()
         {
-            foreach (var initField in _initFields)
+            var factory = FirmFactory.Instance;
+            var firm = factory.Create();
+
+            foreach (var initFieldName in factory.GetFields())
             {
-                string newValue = initField.Value + "НОВОЕ ЗНАЧЕНИЕ";
-                _firm.SetField(initField.Key, newValue);
-                Assert.AreEqual(newValue, _firm.GetField(initField.Key));
+                string newValue = "НОВОЕ ЗНАЧЕНИЕ" + initFieldName;
+                firm.SetField(initFieldName, newValue);
+                Assert.AreEqual(newValue, firm.GetField(initFieldName));
+                
             }
-        }
-
-
-        [TestMethod]
-        public void Firm_GetMain()
-        {
-            Assert.AreEqual(_mainSubFirm, _firm.GetMain());
-        }
-
-        [TestMethod]
-        public void Firm_GetMain_ThrowsIfNoMain()
-        {
-            var firm = new Firm(_initFields);
-            firm.AddSubFirm(_otherSubFirm);
-
-            Assert.Throws<Exception>(() => firm.GetMain());
         }
 
         [TestMethod]
         public void Firm_AddContactToSubfirm()
         {
-            Contact contact = new Contact();
-            _firm.AddContToSbFirm(contact, _otherSubFirm);
-            Assert.IsTrue(_otherSubFirm.ExistContact(contact));
-            Assert.IsFalse(_mainSubFirm.ExistContact(contact));
+            var factory = FirmFactory.Instance;
+            var firm = factory.Create();
+
+            var otherSbFirm = new SubFirm(TestSetup.sbFirmsTypeRepo[1]) { Name = "Конторка" };
+            firm.AddSubFirm(otherSbFirm);
+
+            var contact = new Contact() { Descr="Контакт с 'ООО' Рога и копыта"};
+
+            firm.AddContToSbFirm(contact, otherSbFirm);
+            Assert.IsTrue(otherSbFirm.ExistContact(contact));
         }
+
+        [TestMethod]
+        public void Firm_AddContToMain()
+        {
+            var factory = FirmFactory.Instance;
+            var firm = factory.Create();
+
+            var mainSubFirm = firm.GetMain();
+
+            var deliveryType = new ContType()
+            {
+                Name="Поставка",
+                Note="Поставка огурцов"
+            };
+
+            var contact = new Contact()
+            {
+                Descr = "Контакт с 'ООО' Рога и копыта",
+                Type = deliveryType
+            };
+
+            firm.AddContToMain(contact);
+
+            Assert.IsTrue(mainSubFirm.ExistContact(contact));
+            Assert.AreEqual(contact, firm.GetContact(contact));
+            Assert.AreNotSame(contact, firm.GetContact(contact));
+        }
+
+        [TestMethod]
+        public void AddContactTwice()
+        {
+            var factory = FirmFactory.Instance;
+            var firm = factory.Create();
+
+            var mainSubFirm = firm.GetMain();
+
+            var deliveryType = new ContType()
+            {
+                Name = "Поставка",
+                Note = "Поставка огурцов"
+            };
+
+            var buildingType = new ContType()
+            {
+                Name = "Стройка",
+                Note = "Постройка здания на ул. Минина"
+            };
+
+            var contact1 = new Contact()
+            {
+                Descr = "Контакт с 'ООО' Рога и копыта",
+                Type = buildingType
+            };
+
+            var contact2 = new Contact()
+            {
+                Descr = "Контакт с 'ООО' Строим дома",
+                Type = deliveryType
+            };
+
+
+            firm.AddContToMain(contact1);
+            firm.AddContToMain(contact2);
+
+            Assert.AreEqual(contact1, firm.GetContact(buildingType)[0]);
+            Assert.AreNotSame(contact1, firm.GetContact(buildingType)[0]);
+
+
+            Assert.AreEqual(contact2, firm.GetContact(deliveryType)[0]);
+            Assert.AreNotSame(contact2, firm.GetContact(deliveryType)[0]);
+        }
+
+
+
 
         [TestMethod]
         public void Firm_RenameField()
         {
-            foreach (var initField in _initFields)
-            {
-                string newFieldName = initField.Key + "_new";
-                _firm.RenameField(initField.Key, newFieldName);
-                Assert.AreEqual(_firm.GetField(newFieldName), _initFields[initField.Key]);
+            var factory = FirmFactory.Instance;
+            var factoryFields = factory.GetFields();
+            var firm = factory.Create();
 
-                _firm.RenameField(newFieldName, initField.Key);
-                Assert.AreEqual(_firm.GetField(initField.Key), _initFields[initField.Key]);
+            foreach (var field in factoryFields)
+            {
+                firm.SetField(field, "ЗНАЧЕНИЕ" + field);
+            }
+
+            foreach (var field in factoryFields)
+            {
+                firm.RenameField(field, field + "_new");
+            }
+
+            foreach (var field in factoryFields)
+            {
+                string expectedValue = "ЗНАЧЕНИЕ" + field;
+                string actualValue = firm.GetField(field + "_new");
+
+                Assert.AreEqual(expectedValue, actualValue);
             }
         }
+
+        [TestMethod]
+        public void Firm_AddSubFirm()
+        {
+            var factory = FirmFactory.Instance;
+            var firm = factory.Create();
+
+            string sbFirmName = "Имя подразделения";
+
+            var sbType = TestSetup.sbFirmsTypeRepo[1];
+            var subFirm = new SubFirm(sbType)
+            {
+                Name=sbFirmName
+            };
+
+            int countBefore = firm.SbFirmCount;
+
+            firm.AddSubFirm(subFirm);
+
+            Assert.AreEqual(countBefore + 1, firm.SbFirmCount);
+            Assert.IsNotNull(firm.GetByName(sbFirmName));
+            Assert.IsNotNull(firm.GetByType(sbType));
+        }
+
 
 
         [TestMethod]
         public void Firm_AddSecondMainSubFirm()
         {
-            var mainType = new SbFirmType("Основное", true);
+            var factory = FirmFactory.Instance;
+            var firm = factory.Create();
 
+            var mainType = TestSetup.sbFirmsTypeRepo[0];
             var secondMain = new SubFirm(mainType);
 
             Assert.Throws<Exception>(() =>
             {
-                _firm.AddSubFirm(secondMain);
+                firm.AddSubFirm(secondMain);
             });
-
-            Assert.AreSame(_mainSubFirm, _firm.GetMain());
         }
-
     }
 }

@@ -30,35 +30,5 @@ namespace oop_lab3_tests
 
            Assert.AreEqual(firm.GetMain().Type, TestSetup.sbFirmsTypeRepo[0]);
         }
-
-        [TestMethod]
-        public void FieldRenaming()
-        {
-            FirmFactory factory = FirmFactory.Instance;
-            Firm firm = factory.Create();
-
-            List<string> values = new List<string>{ "0", "1", "2", "3", "4" };
-            List<string> fields = factory.GetFields();
-            for (int i = 0; i < fields.Count; i++)
-            {
-                firm.SetField(fields[i], values[i]);
-            }
-
-            for (int i = 0; i < fields.Count; i++)
-            {
-                string oldName = fields[i];
-                string newName = "Renamed_" + oldName;
-                firm.RenameField(oldName, newName);
-            }
-
-            for (int i = 0; i < fields.Count; i++)
-            {
-                string newName = "Renamed_" + fields[i];
-                Assert.IsNull(firm.GetField(fields[i]));
-                Assert.IsNotNull(firm.GetField(newName));
-
-                Assert.AreEqual(firm.GetField(newName), values[i]);
-            }
-        }
     }
 }
